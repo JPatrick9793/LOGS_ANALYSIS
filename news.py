@@ -14,7 +14,7 @@ def mostPopularArticle():
         "SELECT path, count(*) AS num "
         "FROM log "
         "WHERE path LIKE '/article%' "
-        "AND status = '200 OK'
+        "AND status = '200 OK' "
         "GROUP BY path;")
     # combined "logpath" with "articles" where the
     # slug was similiar to log.path
@@ -78,12 +78,12 @@ def percentErrorByDay():
         "FROM errors, total "
         "WHERE errors.time::date = total.time::date "
         "AND (errors.x::float / total.num::float * 100) > 1.0 "
-        "ORDER BY time::date;")
+        "ORDER BY errors.time::date;")
     print(
         "\nDays in which more than 1% "
         "of requests led to errors:")
     for date, percent in c.fetchall():
-        print("    {} -- {} views".format(date, percent))
+        print("    {} -- {}%".format(date, percent))
     db.close()
 
 

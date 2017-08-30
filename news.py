@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 import psycopg2
-import pprint
 DBNAME = "news"
 
 
 def get_query_results(query):
-    db = psycopg2.connect(database=DBNAME)
-    c = db.cursor()
-    c.execute(query)
-    result = c.fetchall()
-    db.close()
-    return result
+    try:
+        db = psycopg2.connect(database=DBNAME)
+        c = db.cursor()
+        c.execute(query)
+        result = c.fetchall()
+        db.close()
+        return result
+    except Exception as e:
+        print ("\n", e)
+        exit(1)
 
 
 def mostPopularArticle():
@@ -34,6 +37,7 @@ def mostPopularAuthor():
         "SELECT authors.name, count(*) AS num "
         "FROM articles, authors, log "
         "WHERE articles.author = authors.id "
+        "AND substring(log.path from 10) = articles.slug "
         "GROUP BY authors.name "
         "ORDER BY num DESC;")
     result = get_query_results(query)
